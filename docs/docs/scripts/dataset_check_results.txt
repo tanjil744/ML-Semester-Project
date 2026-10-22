@@ -1,0 +1,53 @@
+DATASET CHECK
+Expected classes: {0: 'eraser', 1: 'pencil', 2: 'pencil sharpener', 3: 'ruler'}
+
+train: 2268 images, 2268 label files
+  Empty label files: 13
+  eraser: 1076 valid boxes
+  pencil: 3956 valid boxes
+  pencil sharpener: 207 valid boxes
+  ruler: 1493 valid boxes
+
+valid: 111 images, 111 label files
+  Empty label files: 1
+  eraser: 15 valid boxes
+  pencil: 108 valid boxes
+  pencil sharpener: 12 valid boxes
+  ruler: 17 valid boxes
+
+test: 206 images, 206 label files
+  Empty label files: 5
+  eraser: 80 valid boxes
+  pencil: 168 valid boxes
+  pencil sharpener: 43 valid boxes
+  ruler: 62 valid boxes
+
+Exact duplicate image groups: 0
+Groups spanning different splits: 0
+
+File and annotation issues: 17
+- train/labels/1650548685961_nmz_jpg.rf.b3b91a688efa0f5fe7e6cbe9a2d67ca0.txt, line 3: duplicate annotation
+- train/labels/20220401_114104_atm_jpg.rf.42daecdfe9c2dfa1798454f7572baa77.txt, line 4: duplicate annotation
+- train/labels/20220412_170445_atm_jpg.rf.de130183d24d4c69b2a93ab7bb8d64fe.txt, line 3: duplicate annotation
+- train/labels/20220412_170445_atm_jpg.rf.de130183d24d4c69b2a93ab7bb8d64fe.txt, line 4: duplicate annotation
+- train/labels/20220414_154448_atm_jpg.rf.c03c444d9dd5788fcf89acfd6f38c217.txt, line 3: expected 5 values
+- train/labels/5b9e04635de94169b40ba5788f1e64db-jpg_720x720q80_jpg.rf.07d2383e4d28fb5bd22c2641426dd009.txt, line 1: expected 5 values
+- train/labels/5b9e04635de94169b40ba5788f1e64db-jpg_720x720q80_jpg.rf.7e3b920202fb896c81d92ea159254d29.txt, line 1: expected 5 values
+- train/labels/5b9e04635de94169b40ba5788f1e64db-jpg_720x720q80_jpg.rf.913e0ee628c61230489d295d07ec272a.txt, line 1: expected 5 values
+- train/labels/5b9e04635de94169b40ba5788f1e64db-jpg_720x720q80_jpg.rf.913e0ee628c61230489d295d07ec272a.txt, line 6: expected 5 values
+- train/labels/bec1e533-3724-41de-8abf-5ddb7c8e9897_jpeg.rf.61aa8bf9d424e0fdc7b7150c75c93666.txt, line 2: duplicate annotation
+- train/labels/green99_jpg.rf.4ff065e27a56fe5ea787a2cd7720cabf.txt, line 4: duplicate annotation
+- train/labels/green99_jpg.rf.4ff065e27a56fe5ea787a2cd7720cabf.txt, line 5: duplicate annotation
+- train/labels/IMG_1040_jlk_jpg.rf.5eab9a2e99e67d76a29459a258c34033.txt, line 1: expected 5 values
+- train/labels/IMG_1185_jlk_jpg.rf.8d5f8c47a0936911d4d2b8fd3dcd306b.txt, line 4: duplicate annotation
+- train/labels/IMG_1388_jlk_jpg.rf.f03a141e8d256d10a739952d0590afc6.txt, line 5: duplicate annotation
+- train/labels/red14_jpg.rf.b9bcd50fb437d0747d059bbd8e2aaffb.txt, line 5: duplicate annotation
+- train/labels/red9_jpg.rf.b94bb33672d8d7a60d3b0e8e6bdc0e6e.txt, line 3: expected 5 values
+
+LIMITATIONS
+- Hashes detect identical file bytes only.
+- Resized, flipped, or similar images require further checks.
+- Image decoding and visual label accuracy are not checked.
+- Empty labels may be valid background images; review them.
+- Class names must be checked against data.yaml.
+- This report does not establish readiness for training.
