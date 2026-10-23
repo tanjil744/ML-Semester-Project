@@ -1,0 +1,36 @@
+DATASET CHECK
+Expected classes: {0: 'eraser', 1: 'pencil', 2: 'pencil sharpener', 3: 'ruler'}
+
+train: 2268 images, 2268 label files
+  Empty label files: 13
+  eraser: 1076 valid boxes
+  pencil: 3956 valid boxes
+  pencil sharpener: 207 valid boxes
+  ruler: 1499 valid boxes
+
+valid: 111 images, 111 label files
+  Empty label files: 1
+  eraser: 15 valid boxes
+  pencil: 108 valid boxes
+  pencil sharpener: 12 valid boxes
+  ruler: 17 valid boxes
+
+test: 206 images, 206 label files
+  Empty label files: 5
+  eraser: 80 valid boxes
+  pencil: 168 valid boxes
+  pencil sharpener: 43 valid boxes
+  ruler: 62 valid boxes
+
+Exact duplicate image groups: 0
+Groups spanning different splits: 0
+
+File and annotation issues: 0
+
+LIMITATIONS
+- Hashes detect identical file bytes only.
+- Resized, flipped, or similar images require further checks.
+- Image decoding and visual label accuracy are not checked.
+- Empty labels may be valid background images; review them.
+- Class names must be checked against data.yaml.
+- This report does not establish readiness for training.
