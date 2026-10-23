@@ -1,0 +1,35 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Model weights (too large for Git — share via Drive/link instead)
+*.pt
+*.pth
+*.onnx
+*.weights
+
+# YOLO training runs
+runs/
+
+# Dataset images (too large for Git — share via Drive/link instead)
+data/images/
+train/
+valid/
+test/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
