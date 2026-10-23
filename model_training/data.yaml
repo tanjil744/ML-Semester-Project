@@ -1,1 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
 
+nc: 4
+names: ['eraser', 'pencil', 'pencil sharpener', 'ruler']
+
+roboflow:
+  workspace: lalaworkspace
+  project: stationery-l7qrn
+  version: 7
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/lalaworkspace/stationery-l7qrn/dataset/7
