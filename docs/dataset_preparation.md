@@ -1,88 +1,169 @@
-# Dataset Preparation
+# Dataset preparation and training handoff
+
+## Current handoff snapshot
+
+Use the **Grouped Stationery Dataset v1.0**
+[release](https://github.com/tanjil744/ML-Semester-Project/releases/tag/dataset-grouped-v1.0)
+and its `stationery_grouped_for_training.zip` attachment for the exact
+handoff snapshot.
+
+| Split | Images | Label files |
+| --- | ---: | ---: |
+| train | 2,284 | 2,284 |
+| valid | 103 | 103 |
+| test | 198 | 198 |
+| Total | 2,585 | 2,585 |
+
+The original export had 2,268 / 111 / 206 images. The first reviewed copy
+had 2,271 / 111 / 203; the grouped copy has the counts above. All versions
+include augmented images.
+
+The published dataset attachment has SHA-256:
+
+```text
+e6bcf4a63761000292ef12209eb202462f4bdcdda59ffc0348be548a0ab3cf20
+```
+
+### Configure training after extracting
+
+Set `path:` in the extracted dataset's `data.yaml` to the extracted
+`stationery.v7i.yolov8_grouped` folder in your environment. The remaining
+split fields are:
+
+```yaml
+train: train/images
+val: valid/images
+test: test/images
+nc: 4
+names: ['eraser', 'pencil', 'pencil sharpener', 'ruler']
+```
+
+Keep the class IDs unchanged. Pass this extracted configuration to the
+training script and label the experiment `dataset-grouped-v1.0`.
+Training uses train; tuning and model selection use valid; final evaluation
+uses test. Earlier results recorded with the original split should retain
+that dataset-version label.
 
 ## Source and credit
-Stationery dataset, version 7, by Lalaworkspace.
-License: CC BY 4.0.
-https://universe.roboflow.com/lalaworkspace/stationery-l7qrn/dataset/7
 
-Our group modified label formatting and removed duplicate annotations.
-The original images and annotations are credited to the dataset creator.
+Stationery dataset, version 7, by Lalaworkspace; license CC BY 4.0.
+[Original source](https://universe.roboflow.com/lalaworkspace/stationery-l7qrn/dataset/7).
 
-## Download
-Download version 7 in YOLOv8 format and extract the ZIP.
+Original images and annotations are credited to the creator. Our group
+changed label formatting, removed duplicate annotations, restored one missing
+local sharpener annotation, and grouped reviewed related captures within
+splits. The release remains a prepared derivative of the source dataset.
 
-Keep an original copy before preparing the dataset.
+## Reproduce the preparation procedure
 
-## Class mapping
-- 0: eraser
-- 1: pencil
-- 2: pencil sharpener
-- 3: ruler
+The following Windows Command Prompt workflow starts from the original
+version-7 YOLOv8 export, not from the already prepared release. Use the
+release ZIP when you need the exact handoff snapshot.
 
-Preserve this mapping. The inspection target is 2 pencils,
-1 eraser, and 1 ruler.
+1. Extract the original download into `stationery.v7i.yolov8`.
+2. Download the five Python files from [scripts](../scripts/) into the
+   parent directory of that folder.
+3. Open Command Prompt in that parent directory. Keep the original folder,
+   generated copies, and backups as sibling folders.
 
-## Reproduce the cleanup
-Download these files from our repository's scripts folder:
-- check_dataset.py
-- prepare_detection_labels.py
-
-Place both scripts beside the extracted stationery.v7i.yolov8 folder.
-Open a terminal in that parent folder.
-
-Run the initial audit:
+### 1. Audit and clean annotations
 
 ```bat
-py check_dataset.py stationery.v7i.yolov8 > audit_before.txt
-```
-
-Run the cleanup:
-
-```bat
+py check_dataset.py stationery.v7i.yolov8 > audit_original_format.txt
 py prepare_detection_labels.py stationery.v7i.yolov8
+py check_dataset.py stationery.v7i.yolov8 > audit_cleaned_format.txt
 ```
 
-Run the audit again:
+The cleanup validates labels, converts polygons to enclosing bounding boxes,
+removes equal duplicate annotations, saves original affected files in a
+timestamped backup, and records changes in `changes.json`.
+
+The original audit flagged seven polygon lines and ten duplicate annotation
+lines. During the historical manual workflow, three polygons were fixed
+first; the cleanup then handled four polygons and ten duplicates across
+11 remaining files. Starting from the original export, the script handles
+all seven polygon conversions without repeating those manual edits.
+The later missing local sharpener line was restored from the original
+annotation; it is already present in the original export.
+
+### 2. Group the first four reviewed source families
+
+Preview, then create a separate reviewed copy:
 
 ```bat
-py check_dataset.py stationery.v7i.yolov8 > audit_after.txt
+py prepare_reviewed_splits.py stationery.v7i.yolov8
+py prepare_reviewed_splits.py stationery.v7i.yolov8 --apply
 ```
 
-The cleanup script:
-- Converts polygon annotations into enclosing rectangular boxes.
-- Removes repeated annotations with identical class and box coordinates.
-- Backs up affected labels in a timestamped Label_Backup folder.
-- Records changes in changes.json.
-- Preserves images and the existing dataset splits.
+Expected output folder: `stationery.v7i.yolov8_reviewed_splits`.
+Expected image/label counts: train 2,271; valid 111; test 203.
+Four image–label pairs are relocated; reviewed image contents are verified
+against the recorded source hashes.
 
-Starting from the original download, the script handles all
-corrections; teammates do not need to repeat the manual edits below.
+### 3. Add the reviewed capture groups
 
-## Work performed
-The initial audit flagged 17 annotation lines:
-- 7 polygon annotations requiring conversion for box detection.
-- 10 duplicate annotations.
+```bat
+py prepare_additional_groups.py stationery.v7i.yolov8_reviewed_splits
+py prepare_additional_groups.py stationery.v7i.yolov8_reviewed_splits --apply
+```
 
-Three polygon annotations were converted manually first.
-The cleanup script then changed 11 remaining files, converting
-4 polygons and removing 10 duplicate annotations.
+Expected output folder: `stationery.v7i.yolov8_grouped`.
+Fourteen additional image–label pairs are relocated. Seven reviewed groups
+cover 119 known images, including named training mosaics. Image and label
+contents are preserved during grouping. The new `split_corrections.json`
+retains the previous log and the 22-candidate visual-review decisions.
 
-The final audit reported 0 file and annotation issues under
-the checks implemented in check_dataset.py.
+Group 101 treats the dated image sequence as a conservative capture-session
+group, inferred from filenames and visual context. Groups 102 and 103 handle
+the two reviewed red-pencil families. This is not verified provenance for
+every image in the dataset.
 
-## Dataset size
-- Training: 2,268 images
-- Validation: 111 images
-- Test: 206 images
-- Total: 2,585 images, including augmented images
+Both grouping scripts create new copies and refuse to overwrite an existing
+output folder. Use a fresh output directory with `--output` when repeating
+a preparation run.
 
-## Remaining review
-- Inspect the 19 empty label files for missing annotations.
-- Visually check bounding boxes and class assignments.
-- Check similar and augmented images for overlap between splits.
-- Confirm image paths for the training environment.
-- Evaluate package completeness using images with known item counts.
+### 4. Verify the grouped copy
 
-Zero issues in the automated report establishes format consistency
-under those checks. It does not establish visual annotation accuracy,
-independent dataset splits, or model performance.
+```bat
+py check_dataset.py stationery.v7i.yolov8_grouped > dataset_check_after_grouping.txt
+py -m pip install Pillow
+py audit_reviewed_overlap.py stationery.v7i.yolov8_grouped --output split_overlap_after_grouping.json
+```
+
+The overlap auditor writes a JSON report outside the dataset and leaves
+images and labels unchanged. Choose a new report filename if the output
+already exists.
+
+## Recorded outcomes and limits
+
+- [Grouped format/pairing audit](dataset_check_after_grouping.txt): zero
+  issues under the implemented checks.
+- [Grouped correction log](split_corrections_after_grouping.json): seven
+  reviewed groups and fourteen additional paired moves; the earlier log
+  records the first four moves.
+- Recorded overlap run: 2,585 decoded images, zero decode errors,
+  707,878 cross-split comparisons, zero byte-identical cross-split groups,
+  zero normalized-filename cross-split groups, and seven of seven
+  reviewed groups passing.
+- Twelve remaining perceptual candidates were visually reviewed; that
+  review did not establish a shared original source strongly enough to
+  justify further moves.
+- The [initial overlap review](split_overlap_review.md) records the
+  earlier 26-candidate screening. Candidate numbering can differ between
+  runs; identify images by their full filenames.
+- The [empty-label review](empty_label_review.md) provisionally retained
+  the 19 empty labels; it did not establish exhaustive annotation accuracy.
+
+Perceptual hashes can both miss related captures and flag different images
+with similar layouts. Crop reuse and mixed-source mosaics are not fully
+covered; complete source independence and visual correctness of every
+annotation are not established. Pillow versions can affect borderline
+candidate distances. These checks do not establish detection accuracy or
+package-level performance.
+
+## Next model work
+
+Use the grouped release for a new, clearly versioned training/evaluation
+run. Evaluate actual assembled kits with known item counts to assess
+package-completeness decisions. Record detection metrics separately from
+the correctness of complete/missing/excess package decisions.
