@@ -56,15 +56,28 @@ Pair numbers match the contact sheets. These are visual similarity judgments, no
 
 This is an initial screening, not proof that every related image has been identified. Do not automatically delete all 26 candidate pairs. Training-label cleanup is separate from split changes.
 
-## Reproduce
-The included audit_split_overlap.py reads the original ZIP. It requires Python and Pillow. Install Pillow in the environment used to run the script, then run:
+## Reproduce the numeric screening
+
+The current [audit_reviewed_overlap.py](../scripts/audit_reviewed_overlap.py)
+accepts an extracted dataset folder. Download that script into the parent
+of the extracted original version-7 folder, install Pillow, then run:
 
 ```bat
 py -m pip install Pillow
-py audit_split_overlap.py stationery.v7i.yolov8.zip --output split_overlap_results.json
+py audit_reviewed_overlap.py stationery.v7i.yolov8 --output split_overlap_original.json
 ```
 
-The script only reads the ZIP and writes a JSON report. It does not edit the dataset. The two contact sheets supplied here were produced during this review; rerunning the script produces the numeric candidate report only. Pillow versions/resampling can affect borderline candidate distances. Four strong matches were selected by visual inspection rather than automatically by the script.
+It reads images and writes JSON; it does not edit images, labels, or splits.
+Use a new output filename if the report already exists. The original
+contact-sheet pair numbers above are historical labels; the current
+auditor's candidate IDs may differ, so compare full filenames.
+
+The current script produces a numeric report, not contact sheets. Pillow
+versions/resampling can affect borderline distances. Visual decisions in
+this initial review were made separately from the automatic threshold.
+
+For the subsequent grouping procedure and current release counts, see
+[dataset preparation](dataset_preparation.md).
 
 ## Credit
 Dataset: Stationery v7 by Lalaworkspace, CC BY 4.0.
